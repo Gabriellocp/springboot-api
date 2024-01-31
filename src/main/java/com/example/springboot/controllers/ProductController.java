@@ -16,6 +16,7 @@ import com.example.springboot.repositories.ProductRepository;
 
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,5 +64,14 @@ public class ProductController {
         return ResponseEntity.status(HttpStatus.OK).body(productRepository.save(newProductModel));
     }
     
+    @DeleteMapping("/products/{id}")
+    public ResponseEntity<Object> deleteProduct(@PathVariable(value="id") UUID id){
+        Optional<ProductModel> productModel = productRepository.findById(id);
+        if(productModel.isEmpty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found");
+        }
+        productRepository.delete(productModel.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Product deleted");
+    }
 
 }
